@@ -31,7 +31,6 @@
 ;;    does the real work
 
 ;;; Code:
-(add-to-list 'load-path "elisp-json-rpc")
 (require 'json-rpc)
 
 ;; Configuration variables
