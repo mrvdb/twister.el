@@ -6,7 +6,7 @@
 ;; The original idea for this client was to minimally implement:
 ;; - make it possible to post to twister directly from Emacs;
 ;; - have autocompletion for 'known users' when posting a message
-;;   (this probably means defining a 'mode'
+;;   (this probably means defining a 'mode')
 
 ;; During the implementation of the above the following nice-to-have
 ;; came to mind:
@@ -41,7 +41,8 @@
   )
 
 (defcustom twister-user "twister_user"
-  "The nickname you use on your twister instance. When posting messages, this will be the name used"
+  "The nickname you use on your twister instance. When posting
+messages, this will be the name used"
   :type 'string
   :group 'twister)
 
@@ -51,7 +52,8 @@
   :group 'twister)
 
 (defcustom twister-rpcpassword "pwd"
-  "The RPC password for the `twister-rpcuser configured in the twister.conf file"
+  "The RPC password for the `twister-rpcuser configured in the
+twister.conf file"
   :type 'string
   :group 'twitter)
 
