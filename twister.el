@@ -74,6 +74,19 @@ in the twister configuration."
   :type 'integer
   :group 'twister)
 
+(defvar twister-post-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "\C-c\C-c" 'twister-post-buffer)
+    map)
+  "Keymap for `twister-post-mode'.")
+
+(define-derived-mode twister-post-mode text-mode "twister-post"
+  "Twister major mode for posting new messages."
+  ;; Reason I want this:
+  ;; - define autompletion on @ sign
+  ;; - define specific key map for posting messages
+  )
+
 ;; Preliminary convention
 ;; tw-* methods      -> sorta private for now, don't use directly
 ;; twister-* methods -> public API
