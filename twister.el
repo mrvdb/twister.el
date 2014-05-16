@@ -67,6 +67,13 @@ twister.conf file"
   :type 'integer
   :group 'twister)
 
+(defcustom twister-max-msgsize 140
+  "Maximum size of messages to post.  Default of the server is 140.
+If you want larger messages, you will need to enable automatic splitting
+in the twister configuration."
+  :type 'integer
+  :group 'twister)
+
 ;; Preliminary convention
 ;; tw-* methods      -> sorta private for now, don't use directly
 ;; twister-* methods -> public API
@@ -110,15 +117,20 @@ while PARAMS contain the rest of the parameters."
   "Post the current region to twister"
   (interactive "r")
 
-  (twister-post
-   (buffer-substring-no-properties begin end)))
+  (let ((selection (buffer-substring-no-properties begin end)))
+
+    (when (or (<= (length selection) twister-max-msgsize)
+              (y-or-n-p (format (concat "The message is %i characters long. "
+                                        "Do you still want to post? ")
+                                (length selection))))
+      (message "Posting message...")
+      (twister-post selection))))
 
 (defun twister-post-buffer()
   "Post the current buffer to twister"
   (interactive)
 
-  (twister-post-region
-   (point-min point-max)))
+  (twister-post-region (point-min) ( point-max)))
 
 
 (provide 'twister)
