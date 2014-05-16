@@ -8,4 +8,4 @@
 ;; Fill in your own nick here
 (setq twister-nick "yournick")
 
-(twister-post "I have installed twister.el, and it works! -- https://github.com/mrvdb/twister.el")
+(twister-post "I have installed twister.el, and it works! -- https://github.com/mrvdb/twister.el  #emacs #twister")
