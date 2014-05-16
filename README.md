@@ -19,7 +19,7 @@ Usage
 (require 'twister)
 
 ;; Configure an exsting username
-(setq twister-user "yournick)
+(setq twister-user "yournick")
 
 ;; Usage from code
 (twister-post
