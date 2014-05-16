@@ -67,20 +67,27 @@ twister.conf file"
   :type 'integer
   :group 'twister)
 
-
-;; Get a connection to the twister daemon
-(setf twisterd (json-rpc-connect
-                twister-host twister-port
-                twister-rpcuser twister-rpcpassword))
-
 ;; Preliminary convention
 ;; tw-* methods      -> sorta private for now, don't use directly
 ;; twister-* methods -> public API
+(defun twister-rpc (method &rest params)
+  "Wrapper for the json-rpc method for twister use.
+The connection is closed afer each use.  This is not necessarily
+the most effective.  METHOD is the RPC method we are calling
+while PARAMS contain the rest of the parameters."
+
+  (let* ((twisterd (json-rpc-connect
+                    twister-host twister-port
+                    twister-rpcuser twister-rpcpassword))
+
+         (result (apply 'json-rpc twisterd method params)))
+    (json-rpc-close twisterd)
+    result))
 
 (defun tw-get-last-post(user)
   "Get the last post of a user"
   (let (obj (json-new-object))
-    (json-rpc twisterd "getposts" 1
+    (twister-rpc "getposts" 1
               (vector (json-add-to-object obj "username" user)))))
 
 (defun tw-get-next-k(user)
@@ -95,11 +102,9 @@ twister.conf file"
   "Post msg to the configured twister daemon"
   (interactive)
 
-  (json-rpc
-   twisterd "newpostmsg"
+  (twister-rpc "newpostmsg"
    twister-user
    (tw-get-next-k twister-user) msg))
-
 
 (defun twister-post-region (begin end)
   "Post the current region to twister"
