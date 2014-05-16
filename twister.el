@@ -82,7 +82,7 @@ in the twister configuration."
 (defvar twister-post-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-c" 'twister-post-buffer)
-    (define-key map "\C-c\C-k" 'twister-close-post
+    (define-key map "\C-c\C-k" 'twister-close-post)
     map) "Keymap for `twister-post-mode'.")
 
 (define-derived-mode twister-post-mode text-mode "twister-post"
