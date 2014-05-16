@@ -1,3 +1,0 @@
-[submodule "elisp-json-rpc"]
-	path = elisp-json-rpc
-	url = git@github.com:skeeto/elisp-json-rpc.git
