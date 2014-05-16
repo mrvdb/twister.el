@@ -74,11 +74,16 @@ in the twister configuration."
   :type 'integer
   :group 'twister)
 
+(defcustom twister-post-buffername "New Twister Message"
+  "Name of the buffer in which Twister Messages can be composed."
+  :type 'string
+  :group 'twister)
+
 (defvar twister-post-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-c" 'twister-post-buffer)
-    map)
-  "Keymap for `twister-post-mode'.")
+    (define-key map "\C-c\C-k" 'twister-close-post
+    map) "Keymap for `twister-post-mode'.")
 
 (define-derived-mode twister-post-mode text-mode "twister-post"
   "Twister major mode for posting new messages."
@@ -145,6 +150,24 @@ while PARAMS contain the rest of the parameters."
 
   (twister-post-region (point-min) ( point-max)))
 
+(defun twister-create-post ()
+  (interactive)
+  "Create a new buffer for writing a note"
+  (with-current-buffer (get-buffer-create twister-post-buffername)
+
+    (twister-post-mode)
+
+    (switch-to-buffer-other-window (current-buffer))
+    (fit-window-to-buffer (selected-window) 10 10)))
+
+(defun twister-close-post ()
+  "Hide and kill the posting buffer if it is the special posting buffer."
+  (interactive)
+  (when (get-buffer twister-post-buffername)
+    (with-current-buffer twister-post-buffername
+      (delete-window)
+      (kill-buffer twister-post-buffername)
+      )))
 
 (provide 'twister)
 ;;; twister.el ends here
