@@ -81,8 +81,9 @@ automatic splitting in the twister configuration."
 
 (defvar twister-post-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map "\C-c\C-c" 'twister-post-buffer)
-    (define-key map "\C-c\C-k" 'twister-close-post)
+    (define-key map "\C-c\C-c"  'twister-post-buffer)
+    (define-key map "\C-c\C-k"  'twister-close-post)
+    (define-key map "\C-i"      'pcomplete) ;; \C-i == TAB
     map) "Keymap for `twister-post-mode'.")
 
 (define-derived-mode twister-post-mode text-mode "twister-post"
@@ -180,7 +181,41 @@ users.  In most cases this will be the same as the `twister-user'
 so we use that if user is not specified."
   (interactive)
 
-   (twister-rpc "getfollowing" (if user user twister-user)))
+  (twister-rpc "getfollowing" (if user user twister-user)))
+
+(defun twister-completion-entries ()
+  "Produce a list of entries to which completion can be matched.
+For now, this is just the nicknames the user follows"
+
+  (mapcar (lambda (x) (concat "@" x)) (twister-getfollowing)))
+
+(defun twister-parse-completion-arguments ()
+  (save-excursion
+    (let* ((thisp (point))
+           (pt (search-backward "@" nil t)) ;; Only search @.... stuff
+           (ptt (if pt pt thisp)))
+      (list (list "dummy"
+                  (buffer-substring-no-properties ptt thisp))
+            (point-min) ptt))))
+
+(defun twister-default-completion ()
+  (pcomplete-here (twister-completion-entries)))
+
+
+;; Define autocompletion for the twister-post-mode
+(defun pcomplete-twister-post-setup ()
+  "Setup `twister-post-mode' to use pcomplete"
+  (interactive)
+
+  (set (make-local-variable 'pcomplete-parse-arguments-function)
+       'twister-parse-completion-arguments)
+
+  (set (make-local-variable 'pcomplete-default-completion-function)
+       'twister-default-completion))
+
+;; Enable this now, but this should be the users choice really
+(add-hook 'twister-post-mode-hook 'pcomplete-twister-post-setup)
+
 
 (provide 'twister)
 ;;; twister.el ends here
