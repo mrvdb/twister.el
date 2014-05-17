@@ -90,10 +90,9 @@ automatic splitting in the twister configuration."
 (define-derived-mode twister-post-mode text-mode "twister-post"
   "Twister major mode for posting new messages."
   ;; Reason I want this:
-  ;; -  define autompletion on @ sign
+  ;; ✓ define autompletion on @ sign
   ;; ✓ define specific key map for posting messages
   )
-
 
 (defun twister-rpc (method &rest params)
   "Wrapper for the json-rpc method for twister use.
@@ -221,9 +220,15 @@ For now, this is just the nicknames the user follows"
   (let* ((end (point))
          (start
           (save-excursion
-            (+ (end) (skip-syntax-backward "w_."))))) ;; '@' is punctuation???
+            (+ end (skip-syntax-backward "w_."))))) ;; '@' is punctuation???
 
     (list start end (twister-completion-entries) :exclusive t)))
+
+(defvar twister-post-font-lock-keywords
+  '(("foo". font-lock-comment-face)
+    ("keyword" . font-lock-keyword-face)
+    ("#[[:alnum:]_]+" . font-lock-keyword-face)
+    ("@[[:alnum:]_]+" . font-lock-function-name-face)))
 
 (defun twister-post-mode-setup ()
   "Initialize the twister post-mode."
@@ -233,9 +238,14 @@ For now, this is just the nicknames the user follows"
   (pcomplete-twister-post-setup)
 
   ;; Add nick completion to at-point completion
-  (add-hook 'completion-at-point-functions 'twister-nick-completion-at-point nil t))
+  (add-hook 'completion-at-point-functions 'twister-nick-completion-at-point nil t)
+
+  (set (make-local-variable 'font-lock-defaults)
+       '(twister-post-font-lock-keywords))
+  )
 
 (add-hook 'twister-post-mode-hook 'twister-post-mode-setup)
+
 
 (provide 'twister)
 ;;; twister.el ends here
