@@ -1,8 +1,15 @@
 twister.el
 ==========
 
-An interface to the twister microblogging application from Emacs
+An interface from Emacs to the twister microblogging application.
 
+The purpose of this package is to augment other twister clients. Emacs
+is an editor and, even when using other clients for twister, people
+may want to post their messages using their editor.
+
+While a view of timelines and follow/unfollow logic may be supported
+by this client in time, the focus is on making posting and replying as
+enjoyable as possible from an Emacs perspective.
 
 Dependencies
 ------------
