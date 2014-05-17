@@ -84,7 +84,7 @@ automatic splitting in the twister configuration."
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-c"  'twister-post-buffer)
     (define-key map "\C-c\C-k"  'twister-close-post)
-    (define-key map "\C-i"      'pcomplete) ;; \C-i == TAB
+    (define-key map "\C-i"      'completion-at-point) ;; \C-i == TAB
     map) "Keymap for `twister-post-mode'.")
 
 (define-derived-mode twister-post-mode text-mode "twister-post"
@@ -192,11 +192,11 @@ For now, this is just the nicknames the user follows"
 
 (defun twister-parse-completion-arguments ()
   (save-excursion
-    (let* ((thisp (point))
-           (pt (search-backward "@" nil t)) ;; Only search @.... stuff
-           (ptt (if pt pt thisp)))
-      (list (list "dummy"
-                  (buffer-substring-no-properties ptt thisp))
+    (let* ((end (point))
+           (start (search-backward "@" nil t)) ;; Only search @.... stuff
+           (ptt (if start start end)))
+      (list (list "dummy"  ;; hmm, not liking this
+                  (buffer-substring-no-properties ptt end))
             (point-min) ptt))))
 
 (defun twister-default-completion ()
@@ -214,9 +214,28 @@ For now, this is just the nicknames the user follows"
   (set (make-local-variable 'pcomplete-default-completion-function)
        'twister-default-completion))
 
-;; Enable this now, but this should be the users choice really
-(add-hook 'twister-post-mode-hook 'pcomplete-twister-post-setup)
+(defun twister-nick-completion-at-point ()
+  "Using nicknames, provide a completion table for the text around point."
+  (interactive)
 
+  (let* ((end (point))
+         (start
+          (save-excursion
+            (+ (end) (skip-syntax-backward "w_."))))) ;; '@' is punctuation???
+
+    (list start end (twister-completion-entries) :exclusive t)))
+
+(defun twister-post-mode-setup ()
+  "Initialize the twister post-mode."
+
+  ;; Set up pcomplete
+  ;; This really should be left up to to user
+  (pcomplete-twister-post-setup)
+
+  ;; Add nick completion to at-point completion
+  (add-hook 'completion-at-point-functions 'twister-nick-completion-at-point nil t))
+
+(add-hook 'twister-post-mode-hook 'twister-post-mode-setup)
 
 (provide 'twister)
 ;;; twister.el ends here
