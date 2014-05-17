@@ -38,3 +38,10 @@ Usage
 
 (twister-post-buffer)  ;; Posts the current buffer (with length check) to twister
 (twister-post-region)  ;; Posts the current region (with length check) to twister
+
+
+Screenshot
+----------
+![Example screenshot of twister.el][screenshot]
+
+[screenshot] : [http://media.mrblog.nl/m/media_entries/212/20140518_0010.png] "Example screenshot"
