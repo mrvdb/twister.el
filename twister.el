@@ -5,8 +5,8 @@
 ;;; Commentary:
 ;; The original idea for this client was to minimally implement:
 ;; ✓ make it possible to post to twister directly from Emacs;
-;; -  have autocompletion for 'known users' when posting a message
-;;   (this probably means defining a 'mode')
+;; ✓ have autocompletion for 'known users' when posting a message
+;; ✓ (this probably means defining a 'mode')
 
 ;; During the implementation of the above the following nice-to-have
 ;; came to mind:
@@ -19,7 +19,7 @@
 
 ;; Requirements
 ;; - json-rpc : https://github.com/mrvdb/elisp-json-rpc
-;;   This repository is included as submodule
+;; - pcomplete: (built into emacs)
 
 ;; Installation
 ;; (add-to-list 'load-path "/path/to/twister.el")
@@ -32,6 +32,7 @@
 
 ;;; Code:
 (require 'json-rpc)
+(require 'pcomplete)
 
 ;; Configuration variables
 (defgroup twister nil
