@@ -4,8 +4,8 @@
 
 ;;; Commentary:
 ;; The original idea for this client was to minimally implement:
-;; - make it possible to post to twister directly from Emacs;
-;; - have autocompletion for 'known users' when posting a message
+;; ✓ make it possible to post to twister directly from Emacs;
+;; -  have autocompletion for 'known users' when posting a message
 ;;   (this probably means defining a 'mode')
 
 ;; During the implementation of the above the following nice-to-have
@@ -69,8 +69,8 @@ This is configured in the twister.conf file"
 
 (defcustom twister-max-msgsize 140
   "Maximum size of messages to post.  Default of the server is 140.
-If you want larger messages, you will need to enable automatic splitting
-in the twister configuration."
+If you want larger messages, you will also need to enable
+automatic splitting in the twister configuration."
   :type 'integer
   :group 'twister)
 
@@ -88,13 +88,11 @@ in the twister configuration."
 (define-derived-mode twister-post-mode text-mode "twister-post"
   "Twister major mode for posting new messages."
   ;; Reason I want this:
-  ;; - define autompletion on @ sign
-  ;; - define specific key map for posting messages
+  ;; -  define autompletion on @ sign
+  ;; ✓ define specific key map for posting messages
   )
 
-;; Preliminary convention
-;; tw-* methods      -> sorta private for now, don't use directly
-;; twister-* methods -> public API
+
 (defun twister-rpc (method &rest params)
   "Wrapper for the json-rpc method for twister use.
 The connection is closed afer each use.  This is not necessarily
@@ -109,18 +107,20 @@ while PARAMS contain the rest of the parameters."
     (json-rpc-close twisterd)
     result))
 
-(defun tw-get-last-post(user)
+(defun twister-get-last-post(user)
   "Get the last post of a user"
   (let (obj (json-new-object))
     (twister-rpc "getposts" 1
               (vector (json-add-to-object obj "username" user)))))
 
-(defun tw-get-next-k(user)
-  "Get the next 'k' for a user; this is a post sequence"
-  ;; Data structure visible here: http://twister.net.co/?page_id=21
+(defun twister-get-next-k(user)
+  "Get the next 'k' for a user; this is a post sequence number.
+The data structure that contains is is documented at:
+http://twister.net.co/?page_id=21"
+
   (+ 1 (plist-get
    (plist-get
-    (elt (tw-get-last-post user) 0)
+    (elt (twister-get-last-post user) 0)
     :userpost) :k)))
 
 (defun twister-post(msg)
@@ -129,7 +129,7 @@ while PARAMS contain the rest of the parameters."
 
   (twister-rpc "newpostmsg"
    twister-user
-   (tw-get-next-k twister-user) msg))
+   (twister-get-next-k twister-user) msg))
 
 (defun twister-post-region (begin end)
   "Post the current region to twister.
@@ -162,7 +162,9 @@ The BEGIN and END arguments are the usual points of the region."
     (fit-window-to-buffer (selected-window) 10 10)))
 
 (defun twister-close-post ()
-  "Hide and kill the posting buffer if it is the special posting buffer."
+  "Hide and kill the posting buffer if it is the special posting buffer.
+This is typically used in combination with `twister-create-post'
+to end the posting activity."
   (interactive)
   (when (get-buffer twister-post-buffername)
     (with-current-buffer twister-post-buffername
@@ -170,6 +172,15 @@ The BEGIN and END arguments are the usual points of the region."
       (if (window-parent) (delete-window))
       (kill-buffer twister-post-buffername)
       )))
+
+(defun twister-getfollowing (&optional user)
+  "Get a vector of usernames which are followed by `twister-user'.
+The USER parameter is only useful for the locally registered
+users.  In most cases this will be the same as the `twister-user'
+so we use that if user is not specified."
+  (interactive)
+
+   (twister-rpc "getfollowing" (if user user twister-user)))
 
 (provide 'twister)
 ;;; twister.el ends here
