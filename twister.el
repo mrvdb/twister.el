@@ -165,7 +165,8 @@ while PARAMS contain the rest of the parameters."
   (interactive)
   (when (get-buffer twister-post-buffername)
     (with-current-buffer twister-post-buffername
-      (delete-window)
+      ;; if the window is the sole window in its frame, delete-window will error
+      (if (window-parent) (delete-window))
       (kill-buffer twister-post-buffername)
       )))
 
