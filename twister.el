@@ -41,29 +41,29 @@
   )
 
 (defcustom twister-user "twister_user"
-  "The nickname you use on your twister instance. When posting
-messages, this will be the name used"
+  "The nickname you use on your twister instance.
+When posting messages, this will be the name used"
   :type 'string
   :group 'twister)
 
 (defcustom twister-rpcuser "user"
-  "The RPC username configured in the twister.conf file"
+  "The RPC username configured in the twister.conf file."
   :type 'string
   :group 'twister)
 
 (defcustom twister-rpcpassword "pwd"
-  "The RPC password for the `twister-rpcuser configured in the
-twister.conf file"
+  "The RPC password for the `twister-rpcuser.
+This is configured in the twister.conf file"
   :type 'string
   :group 'twitter)
 
 (defcustom twister-host "localhost"
-  "Host where the twister daemon runs"
+  "Host where the twister daemon runs."
   :type 'string
   :group 'twister)
 
 (defcustom twister-port 28332
-  "Port on which twister daemon runs and serves RPC commands"
+  "Port on which twister daemon runs and serves RPC commands."
   :type 'integer
   :group 'twister)
 
@@ -132,7 +132,8 @@ while PARAMS contain the rest of the parameters."
    (tw-get-next-k twister-user) msg))
 
 (defun twister-post-region (begin end)
-  "Post the current region to twister"
+  "Post the current region to twister.
+The BEGIN and END arguments are the usual points of the region."
   (interactive "r")
 
   (let ((selection (buffer-substring-no-properties begin end)))
@@ -151,8 +152,8 @@ while PARAMS contain the rest of the parameters."
   (twister-post-region (point-min) ( point-max)))
 
 (defun twister-create-post ()
+  "Create a new buffer for writing a note."
   (interactive)
-  "Create a new buffer for writing a note"
   (with-current-buffer (get-buffer-create twister-post-buffername)
 
     (twister-post-mode)
