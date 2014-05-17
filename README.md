@@ -42,6 +42,7 @@ Usage
 
 Screenshot
 ----------
+
 ![Example screenshot of twister.el][screenshot]
 
 [screenshot] : [http://media.mrblog.nl/m/media_entries/212/20140518_0010.png] "Example screenshot"
