@@ -85,6 +85,7 @@ automatic splitting in the twister configuration."
     (define-key map "\C-c\C-c"  'twister-post-buffer)
     (define-key map "\C-c\C-k"  'twister-close-post)
     (define-key map "\C-i"      'completion-at-point) ;; \C-i == TAB
+    (define-key map "\C-c\C-s"  'twister-shortenurl-replace-at-point)
     map) "Keymap for `twister-post-mode'.")
 
 (define-derived-mode twister-post-mode text-mode "twister-post"
@@ -225,9 +226,7 @@ For now, this is just the nicknames the user follows"
     (list start end (twister-completion-entries) :exclusive t)))
 
 (defvar twister-post-font-lock-keywords
-  '(("foo". font-lock-comment-face)
-    ("keyword" . font-lock-keyword-face)
-    ("#[[:alnum:]_]+" . font-lock-keyword-face)
+  '(("#[[:alnum:]_]+" . font-lock-keyword-face)
     ("@[[:alnum:]_]+" . font-lock-function-name-face)))
 
 (defun twister-post-mode-setup ()
@@ -245,6 +244,33 @@ For now, this is just the nicknames the user follows"
   )
 
 (add-hook 'twister-post-mode-hook 'twister-post-mode-setup)
+
+(defun twister-ur1ca-get (api longurl)
+  "Shortens url through ur1.ca free service 'as in freedom'"
+  (let* ((url-request-method "POST")
+         (url-request-extra-headers
+          '(("Content-Type" . "application/x-www-form-urlencoded")))
+         (url-request-data (concat "longurl=" (url-hexify-string longurl)))
+         (buffer (url-retrieve-synchronously api)))
+    (with-current-buffer buffer
+      (goto-char (point-min))
+      (prog1
+          (if (search-forward-regexp "Your .* is: .*>\\(http://ur1.ca/[0-9A-Za-z].*\\)</a>" nil t)
+              (match-string-no-properties 1)
+            (error "URL shortening service failed: %s" longurl))
+        (kill-buffer buffer)))))
+
+(defun twister-shortenurl-replace-at-point ()
+  "Replace the url at point with a shorter version."
+  (interactive)
+  (let ((url-bounds (bounds-of-thing-at-point 'url)))
+    (when url-bounds
+      (let ((url (twister-ur1ca-get "http://ur1.ca" (thing-at-point 'url))))
+        (when url
+          (save-restriction
+            (narrow-to-region (first url-bounds) (rest url-bounds))
+            (delete-region (point-min) (point-max))
+            (insert url)))))))
 
 
 (provide 'twister)
