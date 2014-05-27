@@ -248,6 +248,10 @@ For now, this is just the nicknames the user follows"
 
   (set (make-local-variable 'font-lock-defaults)
        '(twister-post-font-lock-keywords))
+
+  ;; Add counter to the modeline, so we can see what we are doing
+  (setq mode-line-format
+	(cons (format "%s (%%i/%s) " "Twist:" twister-max-msgsize) mode-line-format))
   )
 
 (add-hook 'twister-post-mode-hook 'twister-post-mode-setup)
