@@ -1,6 +1,12 @@
 ;;; twister.el --- A client for the twister distribute microblogging system
-
 ;; Copyright (C) 2014 Marcel van der Boom <marcel@hsdev.com>
+
+;; Author: Marcel van der Boom <marcel@hsdev.com>
+;; Maintainer: Marcel van der Boom
+;; URL: https://github.com/mrvdb/twister.el
+;; Created: 14-05-2014
+;; Version: 0.1
+;; Keywords: microblogging, json
 
 ;;; Commentary:
 ;; The original idea for this client was to minimally implement:
@@ -29,6 +35,7 @@
 ;;; Credits
 ;;  - The elisp-json-rpc library of Christopher Wellons <wellons@nullprogrma.com>
 ;;    does the real work
+;;  - some code was mimicked from identica-mode by Gabriel Saldana
 
 ;;; Code:
 (require 'json-rpc)
