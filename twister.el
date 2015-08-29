@@ -1,5 +1,5 @@
-;;; twister.el --- A client for the twister distribute microblogging system
-;; Copyright (C) 2014 Marcel van der Boom <marcel@hsdev.com>
+;;; twister.el --- A client for the twister distributed microblogging system
+;; Copyright (C) 2014-2015 Marcel van der Boom <marcel@hsdev.com>
 
 ;; Author: Marcel van der Boom <marcel@hsdev.com>
 ;; Maintainer: Marcel van der Boom
@@ -12,7 +12,7 @@
 ;; The original idea for this client was to minimally implement:
 ;; ✓ make it possible to post to twister directly from Emacs;
 ;; ✓ have autocompletion for 'known users' when posting a message
-;; ✓ (this probably means defining a 'mode')
+;;   (this probably means defining a 'mode')
 
 ;; During the implementation of the above the following nice-to-have
 ;; came to mind:
@@ -124,7 +124,7 @@ while PARAMS contain the rest of the parameters."
 
 (defun twister-get-next-k(user)
   "Get the next 'k' for a user; this is a post sequence number.
-The data structure that contains is is documented at:
+The data structure that contains it is documented at:
 http://twister.net.co/?page_id=21"
 
   (+ 1 (plist-get
@@ -198,6 +198,8 @@ For now, this is just the nicknames the user follows"
   (mapcar (lambda (x) (concat "@" x)) (twister-getfollowing)))
 
 (defun twister-parse-completion-arguments ()
+  "Look for completable items between POINT and what is before it.
+This includes '@nicknames' and '#hashtags' for the moment."
   (save-excursion
     (let* ((end (point))
            (start (search-backward "@" nil t)) ;; Only search @.... stuff
@@ -207,12 +209,13 @@ For now, this is just the nicknames the user follows"
             (point-min) ptt))))
 
 (defun twister-default-completion ()
+  "Default completion function for twister."
   (pcomplete-here (twister-completion-entries)))
 
 
 ;; Define autocompletion for the twister-post-mode
 (defun pcomplete-twister-post-setup ()
-  "Setup `twister-post-mode' to use pcomplete"
+  "Setup `twister-post-mode' to use pcomplete."
   (interactive)
 
   (set (make-local-variable 'pcomplete-parse-arguments-function)
@@ -257,7 +260,8 @@ For now, this is just the nicknames the user follows"
 (add-hook 'twister-post-mode-hook 'twister-post-mode-setup)
 
 (defun twister-ur1ca-get (api longurl)
-  "Shortens url through ur1.ca free service 'as in freedom'"
+  "Shortens url through ur1.ca.
+API is their endpoint to which LONGURL is posted for shortening."
   (let* ((url-request-method "POST")
          (url-request-extra-headers
           '(("Content-Type" . "application/x-www-form-urlencoded")))
