@@ -48,6 +48,11 @@
   :group 'applications
   )
 
+(defgroup twister-faces nil
+  "Faces for twister mode"
+  :group 'twister
+  :group 'faces)
+
 (defcustom twister-user "twister_user"
   "The nickname you use on your twister instance.
 When posting messages, this will be the name used"
@@ -86,6 +91,45 @@ automatic splitting in the twister configuration."
   "Name of the buffer in which Twister Messages can be composed."
   :type 'string
   :group 'twister)
+
+(defcustom twister-preview-formatting t
+  "Preview formatting specifiers in the post buffer.
+Twister has support for *bold*, ~italic~, -strike-through- and
+_underlined_ format specifiers."
+  :type 'boolean
+  :group 'twister)
+
+(defface twister-hashtag
+  '((default (:inherit link :underline nil)))
+  "Twister mode face for hash tags"
+  :group 'twister-faces)
+
+(defface twister-bold
+  '((default (:inherit bold)))
+  "Twister mode face for bold text"
+  :group 'twister-faces)
+
+(defface twister-italic
+  '((default (:inherit italic)))
+  "Twister mode face for italic text"
+  :group 'twister-faces)
+
+(defface twister-underline
+  '((default :inherit underline))
+  "Twister mode face for underlined text"
+  :group 'twister-faces)
+
+(defface twister-nickname
+  '((default (:inherit font-lock-type-face )))
+  "Twister mode face for nicknames"
+  :group 'twister-faces)
+
+(defface twister-strikethrough
+  '((default (:inherit default :strike-through t)))
+  "Twister mode face for strike-through text"
+  :group 'twister-faces)
+
+;; End configuration variables
 
 (defvar twister-post-mode-map
   (let ((map (make-sparse-keymap)))
@@ -236,8 +280,13 @@ This includes '@nicknames' and '#hashtags' for the moment."
     (list start end (twister-completion-entries) :exclusive t)))
 
 (defvar twister-post-font-lock-keywords
-  '(("#[[:alnum:]_]+" . font-lock-keyword-face)
-    ("@[[:alnum:]_]+" . font-lock-function-name-face)))
+  '(("#[[:alnum:]_]+"            . 'twister-hashtag)
+    ("@[[:alnum:]_]+"            . 'twister-nickname)
+    ("\\*\\([[:alnum:]-_]+\\)\\*" . (1 'twister-bold))
+    ("~\\([[:alnum:]-_]+\\)~"     . (1 'twister-italic))
+    ("_\\([[:alnum:]-_]+\\)_"     . (1 'twister-underline))
+    ("\\-\\([[:alnum:]-_]+\\)\\-" . (1 'twister-strikethrough)))
+  "Syntax highlighting keywords for twister mode.")
 
 (defun twister-post-mode-setup ()
   "Initialize the twister post-mode."
@@ -247,15 +296,15 @@ This includes '@nicknames' and '#hashtags' for the moment."
   (pcomplete-twister-post-setup)
 
   ;; Add nick completion to at-point completion
-  (add-hook 'completion-at-point-functions 'twister-nick-completion-at-point nil t)
+  (add-hook 'completion-at-point-functions
+	    'twister-nick-completion-at-point nil t)
 
-  (set (make-local-variable 'font-lock-defaults)
-       '(twister-post-font-lock-keywords))
+  (set (make-local-variable 'font-lock-defaults) nil)
+  (setq font-lock-defaults '(twister-post-font-lock-keywords))
 
   ;; Add counter to the modeline, so we can see what we are doing
   (setq mode-line-format
-	(cons (format "%s (%%i/%s) " "Twist:" twister-max-msgsize) mode-line-format))
-  )
+	(cons (format "%s (%%i/%s) " "Twist:" twister-max-msgsize) mode-line-format)))
 
 (add-hook 'twister-post-mode-hook 'twister-post-mode-setup)
 
