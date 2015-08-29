@@ -6,6 +6,6 @@
 ;; Either use customize or elisp directly to customize
 
 ;; Fill in your own nick here
-(setq twister-nick "yournick")
+(setq twister-user "yourusername")
 
 (twister-post "I have installed twister.el, and it works! -- https://github.com/mrvdb/twister.el  #emacs #twister")
