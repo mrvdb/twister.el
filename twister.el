@@ -39,8 +39,9 @@
 ;;  - some code was mimicked from identica-mode by Gabriel Saldana
 
 ;;; Code:
-(require 'json-rpc)
 (require 'pcomplete)
+(require 'twister-rpc)
+
 
 ;; Configuration variables
 (defgroup twister nil
@@ -58,27 +59,6 @@
   "The nickname you use on your twister instance.
 When posting messages, this will be the name used"
   :type 'string
-  :group 'twister)
-
-(defcustom twister-rpcuser "user"
-  "The RPC username configured in the twister.conf file."
-  :type 'string
-  :group 'twister)
-
-(defcustom twister-rpcpassword "pwd"
-  "The RPC password for the `twister-rpcuser.
-This is configured in the twister.conf file"
-  :type 'string
-  :group 'twitter)
-
-(defcustom twister-host "localhost"
-  "Host where the twister daemon runs."
-  :type 'string
-  :group 'twister)
-
-(defcustom twister-port 28332
-  "Port on which twister daemon runs and serves RPC commands."
-  :type 'integer
   :group 'twister)
 
 (defcustom twister-max-msgsize 140
@@ -153,19 +133,7 @@ This uses the standard `goto-address-mode'."
   ;; ✓ define specific key map for posting messages
   )
 
-(defun twister-rpc (method &rest params)
-  "Wrapper for the json-rpc method for twister use.
-The connection is closed afer each use.  This is not necessarily
-the most effective.  METHOD is the RPC method we are calling
-while PARAMS contain the rest of the parameters."
 
-  (let* ((twisterd (json-rpc-connect
-                    twister-host twister-port
-                    twister-rpcuser twister-rpcpassword))
-
-         (result (apply 'json-rpc twisterd method params)))
-    (json-rpc-close twisterd)
-    result))
 
 (defun twister-get-last-post(user)
   "Get the last post of a user"
@@ -232,15 +200,6 @@ to end the posting activity."
       (if (window-parent) (delete-window))
       (kill-buffer twister-post-buffername)
       )))
-
-(defun twister-getfollowing (&optional user)
-  "Get a vector of usernames which are followed by `twister-user'.
-The USER parameter is only useful for the locally registered
-users.  In most cases this will be the same as the `twister-user'
-so we use that if user is not specified."
-  (interactive)
-
-  (twister-rpc "getfollowing" (if user user twister-user)))
 
 (defun twister-completion-entries ()
   "Produce a list of entries to which completion can be matched.
