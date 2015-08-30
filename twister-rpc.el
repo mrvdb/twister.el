@@ -55,15 +55,14 @@ while PARAMS contain the rest of the parameters."
     (json-rpc-close twisterd)
     result))
 
-(defun twister-getfollowing (&optional user)
+(defun twister-getfollowing (user)
   "Get a vector of usernames which are followed by `twister-user'.
 The USER parameter is only useful for the locally registered
 users.  In most cases this will be the same as the `twister-user'
 so we use that if user is not specified."
   (interactive)
 
-  (twister-rpc "getfollowing" (if user user twister-user)))
-
+  (twister-rpc "getfollowing" user))
 
 (provide 'twister-rpc)
 ;;; twister-rpc.el ends here

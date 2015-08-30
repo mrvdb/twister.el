@@ -133,8 +133,6 @@ This uses the standard `goto-address-mode'."
   ;; ✓ define specific key map for posting messages
   )
 
-
-
 (defun twister-get-last-post(user)
   "Get the last post of a user"
   (let (obj (json-new-object))
@@ -205,7 +203,7 @@ to end the posting activity."
   "Produce a list of entries to which completion can be matched.
 For now, this is just the nicknames the user follows"
 
-  (mapcar (lambda (x) (concat "@" x)) (twister-getfollowing)))
+  (mapcar (lambda (x) (concat "@" x)) (twister-getfollowing twister-user)))
 
 (defun twister-parse-completion-arguments ()
   "Look for completable items between POINT and what is before it.
