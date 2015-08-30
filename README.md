@@ -40,6 +40,13 @@ Usage
 (twister-post-region)  ;; Posts the current region (with length check) to twister
 ```
 
+Featurues
+---------
+- post to your twister instance
+- shorten links in place
+- syntax highlight for nicknames, hashtags and links (using goto-address-mode)
+- syntax highlight for bold, italic, underline and strike-through
+
 Screenshot
 ----------
 
