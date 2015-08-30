@@ -12,6 +12,15 @@
 ;; This is the pure mapping of the RPC api from twister into
 ;; emacs-lisp functions
 
+;;; Implemented methods:
+;;
+;; - getfollowing(user) : get vector of users that USER follows
+;; - getgroupinfo(alias): get info about group specified by ALIAS
+;; - getspammsg         : get the message sent for generated blocks
+;; - help(method)       : retrieves help messages for METHOD
+;; - listgroups         : get vector of registered group aliases
+;; - listwalletusers    : get vector of registered users
+;;
 ;;; Code:
 
 (require 'json-rpc)
@@ -55,14 +64,38 @@ while PARAMS contain the rest of the parameters."
     (json-rpc-close twisterd)
     result))
 
+(defun twister-help(method)
+  "Gets the help description for METHOD"
+  (twister-rpc "help" method))
+
 (defun twister-getfollowing (user)
   "Get a vector of usernames which are followed by `twister-user'.
 The USER parameter is only useful for the locally registered
 users.  In most cases this will be the same as the `twister-user'
 so we use that if user is not specified."
-  (interactive)
-
   (twister-rpc "getfollowing" user))
+
+(defun twister-listgroups()
+  "Get a vector of the registered groups."
+  (twister-rpc "listgroups"))
+
+(defun twister-getgroupinfo(alias)
+  "Get info about a groupd specified by ALIAS.
+
+This returns a list with three labeled members:
+`members'     : a vector of the members of the group
+`description' : a description of the group
+`alias'       : the group alias."
+  (twister-rpc "getgroupinfo" alias))
+
+(defun twister-listwalletusers()
+  "Get a vector of the local users."
+  (twister-rpc "listwalletusers"))
+
+(defun twister-getspammsg()
+  "Returns a vector with the message that is sent for generated
+blocks."
+  (twister-rpc "getspammsg"))
 
 (provide 'twister-rpc)
 ;;; twister-rpc.el ends here
