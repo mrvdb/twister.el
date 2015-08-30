@@ -288,7 +288,7 @@ This includes '@nicknames' and '#hashtags' for the moment."
 
 (makunbound 'twister-post-font-lock-keywords)
 (defvar twister-post-font-lock-keywords
-  '(("#[[:alnum:]_]+"             . 'twister-hashtag)
+  '(("\\(^\\| \\)\\(#[[:alnum:]_]+\\)"   . (2  'twister-hashtag))
     ("\\(^\\| \\)\\(@[[:alnum:]_]+\\)"   . (2  'twister-nickname))
     ("\\*\\([[:alnum:]-_]+\\)\\*" . (1 'twister-bold))
     ("~\\([[:alnum:]-_]+\\)~"     . (1 'twister-italic))
