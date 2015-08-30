@@ -27,9 +27,13 @@
           (setf (json-rpc-process connection) process))))))
 
 ;; Specify connectivity to our test-server
+;; This should go into the travis.yml file, so we can use
+;; multiple test environments, for example an ipv4 one
+;; because travis-ci has no IPv6 outgoing connectivity yet.
+
 (setq twister-rpcuser "travis")
 (setq twister-rpcpassword "wmI9HQGumUBmY89wBRUiuBE5")
-(setq twister-host "2001:41f0:61::7")
+(setq twister-host "185.92.221.186")
 (setq twister-port "28332")
 
 ;; Check if we have connectivity to our testmachine
