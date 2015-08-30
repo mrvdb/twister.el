@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mrvdb/twister.el.svg?branch=master)](https://travis-ci.org/mrvdb/twister.el)
+
 twister.el
 ==========
 
