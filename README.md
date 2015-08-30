@@ -42,7 +42,9 @@ Usage
 
 Featurues
 ---------
-- post to your twister instance
+- posts interactively, a buffer, a region or from code to your twister
+instance
+- nickname autocompletion
 - shorten links in place
 - syntax highlight for nicknames, hashtags and links (using goto-address-mode)
 - syntax highlight for bold, italic, underline and strike-through
