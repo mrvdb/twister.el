@@ -2,4 +2,5 @@
 (source melpa)
 
 (development
- (depends-on "json-rpc"))
+ (depends-on "json-rpc")
+ (depends-on "undercover"))

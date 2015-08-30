@@ -2,6 +2,9 @@
 
 (require 'twister-rpc)
 
+(when (require 'undercover nil t)
+  (undercover "twister-rpc.el"))
+
 ;; Interactive
 (ert-deftest interactive-test-01 nil
   "This test should run on travis"
