@@ -25,7 +25,7 @@ Usage
 ```el
 (require 'twister)
 
-;; Configure an exsting username
+;; Configure an existing username
 (setq twister-user "yournick")
 
 ;; Usage from code
@@ -43,10 +43,11 @@ Usage
 Featurues
 ---------
 - posts interactively, a buffer, a region or from code to your twister
-instance
+  instance
 - nickname autocompletion
 - shorten links in place
-- syntax highlight for nicknames, hashtags and links (using goto-address-mode)
+- syntax highlight for nicknames, hashtags and links (using
+  goto-address-mode)
 - syntax highlight for bold, italic, underline and strike-through
 
 Screenshot
