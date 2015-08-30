@@ -31,6 +31,7 @@
 ;; (add-to-list 'load-path "/path/to/twister.el")
 ;; (require 'twister)
 ;; (setq twister-user "yournick")
+;; (twister-create-post)
 ;;
 ;;; Credits
 ;;  - The elisp-json-rpc library of Christopher Wellons <wellons@nullprogrma.com>
@@ -96,6 +97,12 @@ automatic splitting in the twister configuration."
   "Preview formatting specifiers in the post buffer.
 Twister has support for *bold*, ~italic~, -strike-through- and
 _underlined_ format specifiers."
+  :type 'boolean
+  :group 'twister)
+
+(defcustom twister-active-addresses t
+  "Make URLs and mail addresses clickable.
+This uses the standard `goto-address-mode'."
   :type 'boolean
   :group 'twister)
 
@@ -279,9 +286,10 @@ This includes '@nicknames' and '#hashtags' for the moment."
 
     (list start end (twister-completion-entries) :exclusive t)))
 
+(makunbound 'twister-post-font-lock-keywords)
 (defvar twister-post-font-lock-keywords
-  '(("#[[:alnum:]_]+"            . 'twister-hashtag)
-    ("@[[:alnum:]_]+"            . 'twister-nickname)
+  '(("#[[:alnum:]_]+"             . 'twister-hashtag)
+    ("\\(^\\| \\)\\(@[[:alnum:]_]+\\)"   . (2  'twister-nickname))
     ("\\*\\([[:alnum:]-_]+\\)\\*" . (1 'twister-bold))
     ("~\\([[:alnum:]-_]+\\)~"     . (1 'twister-italic))
     ("_\\([[:alnum:]-_]+\\)_"     . (1 'twister-underline))
@@ -301,6 +309,10 @@ This includes '@nicknames' and '#hashtags' for the moment."
 
   (set (make-local-variable 'font-lock-defaults) nil)
   (setq font-lock-defaults '(twister-post-font-lock-keywords))
+
+  ;; Make links clickable
+  (if twister-active-addresses
+      (goto-address-mode))
 
   ;; Add counter to the modeline, so we can see what we are doing
   (setq mode-line-format
