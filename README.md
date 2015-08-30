@@ -42,7 +42,7 @@ Usage
 (twister-post-region)  ;; Posts the current region (with length check) to twister
 ```
 
-Featurues
+Features
 ---------
 - posts interactively, a buffer, a region or from code to your twister
   instance
