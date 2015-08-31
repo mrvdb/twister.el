@@ -46,11 +46,17 @@
 	   (featurep 'make-network-process '(:family ipv6))))
 
   ;; Basic connect to our service (is our host:port reachable)
-  (should
-   (make-network-process
-    :name "ci-testconnection"
-    :host twister-host
-    :service twister-port)))
+  (setq canconnect nil)
+  (unless
+      (condition-case nil
+	  (delete-process
+	   (make-network-process
+	    :name "ci-testconnection"
+	    :host twister-host
+	    :service twister-port))
+	(error t))
+    (setq canconnect t))
+  (should canconnect))
 
 
 ;; the above test is a precondition for all the others, I'm
