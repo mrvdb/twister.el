@@ -28,35 +28,30 @@
 
 ;; Specify connectivity to our test-server
 ;; This should go into the travis.yml file, so we can use
-;; multiple test environments, for example an ipv4 one
+;; multiple test environments, for example an ipv one
 ;; because travis-ci has no IPv6 outgoing connectivity yet.
-
 (setq twister-rpcuser "travis")
 (setq twister-rpcpassword "wmI9HQGumUBmY89wBRUiuBE5")
 (setq twister-host "185.92.221.186")
 (setq twister-port "28332")
 
 ;; ;; Check if we have connectivity to our testmachine
-;; (ert-deftest ensure-connectivity nil
-;;   "Make sure we can connect to our RPC server for the tests"
-;;   :tags '(:interactive)
-;;   (let* ((server (json-rpc-connect
-;; 		  twister-host twister-port
-;; 		  twister-rpcuser twister-rpcpassword)))
+(ert-deftest ensure-connectivity nil
+  "Make sure we can connect to our RPC testserver"
+  :tags '(:interactive)
 
-;;     ;; We should have a live connection no
-;;     ;; FIXME: i am not 100% sure this is a reliable test,
-;;     ;; for example, when 403 is expected, this still succeeds.
-;;     (should (json-rpc-live-p server))
+  ;; We should have ipv4 or ipv6 support to begin with
+  (should (or
+	   (featurep 'make-network-process '(:family ipv4))
+	   (featurep 'make-network-process '(:family ipv6))))
 
-;;     ;; Close it and git it some time
-;;     (json-rpc-close server)
-;;     (json-rpc-close server)
-;;     (sleep-for 2)
+  ;; Basic connect to our service (is our host:port reachable)
+  (should
+   (make-network-process
+    :name "ci-testconnection"
+    :host twister-host
+    :service twister-port)))
 
-;;     ;; Now we should not have one
-;;     ;; (should-not (json-rpc-live-p server))
-;;     ))
 
 ;; the above test is a precondition for all the others, I'm
 ;; not sure how to encode that into the tests.
