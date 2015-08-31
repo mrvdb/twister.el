@@ -7,6 +7,7 @@
 ;; Set up our test environment
 
 ;; TEMPORARY OVERRIDE for json-rpc-ensure to support IPv6
+;; this has been applied upstream.
 (defun json-rpc-ensure (connection)
   "Re-establish connection to CONNECTION if needed, returning CONNECTION."
   (let ((old-process (json-rpc-process connection)))
@@ -18,7 +19,6 @@
                                             :buffer buffer
                                             :host host
                                             :service (json-rpc-port connection)
-                                            :family nil
                                             :coding '(utf-8 . utf-8))))
         (setf (process-sentinel process)
               (lambda (proc _)
